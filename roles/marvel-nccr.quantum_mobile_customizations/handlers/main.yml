@@ -1,0 +1,18 @@
+- name: restart gdm3
+  become: true
+  service:
+    name: gdm3
+    state: restarted
+  listen: restart gdm
+- name: restart gdm
+  become: true
+  service:
+    name: gdm
+    state: restarted
+  listen: restart gdm3
+
+- name: restart lightdm
+  become: true
+  service:
+    name: lightdm
+    state: restarted

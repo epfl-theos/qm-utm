@@ -1,0 +1,15 @@
+- name: install psutil
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  pip:
+    # Needed to set the wallpaper (maybe?)
+    name: psutil
+
+# Note: This is applied immediately, no restart needed
+- name: set wallpaper
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  dconf:
+    key: /org/gnome/desktop/background/picture-uri
+    value: "'file://{{ qm_customizations_custom_folder }}/quantum-mobile-bg.png'"
+    state: present

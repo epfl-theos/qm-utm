@@ -1,0 +1,24 @@
+# See https://github.com/debops-contrib/ansible-neurodebian
+- name: Add key for neurodebian repo
+  become: true
+  apt_key:
+    id: 'DD95CC430502E37EF840ACEEA5D32F012649A5A9'
+    keyserver: hkp://pool.sks-keyservers.net
+
+- name: Add neurodebian repo
+  become: true
+  apt_repository:
+    repo: "{{ item }}"
+  with_items:
+  - deb http://neurodebian.g-node.org data main contrib non-free
+    # ansible_distribution_release should be either "xenial" or "bionic"
+  - deb http://neurodebian.g-node.org {{ ansible_distribution_release }} main contrib non-free
+
+- name: Update repositories cache & install singularity
+  become: true
+  apt:
+    update_cache: true
+    cache_valid_time: 86400  # One day
+    name:
+    - singularity-container
+  notify: apt clean

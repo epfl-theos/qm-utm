@@ -1,0 +1,109 @@
+quantum_espresso_version: "6.5"
+# quantum_espresso_git_tag: "90a2aa88298f5005b8ab8f5fcc354c5870481d68"
+quantum_espresso_git_tag: "qe-{{ quantum_espresso_version }}"
+quantum_espresso_src_archive: "q-e-{{ quantum_espresso_git_tag }}.tar.gz"
+quantum_espresso_url: "https://gitlab.com/QEF/q-e/-/archive/{{ quantum_espresso_git_tag }}/{{ quantum_espresso_src_archive }}" # yamllint disable-line
+
+quantum_espresso_env_file: /etc/profile.d/quantum_espresso.sh
+quantum_espresso_prefix: "/usr/local"
+quantum_espresso_data_folder: "{{ quantum_espresso_prefix }}/share/quantum-espresso"
+quantum_espresso_code_folder: "/tmp"
+quantum_espresso_src: "q-e-{{ quantum_espresso_git_tag }}"
+quantum_espresso_topdir: "{{ quantum_espresso_code_folder }}/{{quantum_espresso_src}}" # yamllint disable-line
+
+quantum_espresso_executables:
+- name: pw
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "pw.x"
+  plugin: quantumespresso.pw
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: cp
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "cp.x"
+  plugin: quantumespresso.cp
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: pp
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "pp.x"
+  plugin: quantumespresso.pp
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: ph
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "ph.x"
+  plugin: quantumespresso.ph
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: neb
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "neb.x"
+  plugin: quantumespresso.neb
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: hp
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "hp.x"
+  plugin: quantumespresso.hp
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: w90
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "wannier90.x"
+  plugin: wannier90
+  version: "{{ quantum_espresso_version }}"
+  make: true
+- name: epw
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "epw.x"
+  version: "{{ quantum_espresso_version }}"
+  make: true
+  # utilities
+- name: projwfc
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "projwfc.x"
+  plugin: quantumespresso.projwfc
+  version: "{{ quantum_espresso_version }}"
+- name: pw2wannier90
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "pw2wannier90.x"
+  plugin: quantumespresso.pw2wannier90
+  version: "{{ quantum_espresso_version }}"
+- name: q2r
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "q2r.x"
+  plugin: quantumespresso.q2r
+  version: "{{ quantum_espresso_version }}"
+- name: dos
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "dos.x"
+  plugin: quantumespresso.dos
+  version: "{{ quantum_espresso_version }}"
+- name: matdyn
+  folder: "{{ quantum_espresso_prefix }}/bin"
+  executable: "matdyn.x"
+  plugin: quantumespresso.matdyn
+  version: "{{ quantum_espresso_version }}"
+
+quantum_espresso_pps:
+- name: sssp-pbe-efficiency-1.2
+  file: SSSP_efficiency_pseudos.tar.gz
+  folder: sssp-pbe-efficiency-1.2
+  url: https://archive.materialscloud.org/record/file?filename=SSSP_1.2_PBE_efficiency.tar.gz&record_id=1508
+  description: >-
+    Standard Solid State Pseudopotentials (efficiency)
+    for the PBE functional
+- name: sssp-pbe-precision-1.2
+  file: SSSP_precision_pseudos.tar.gz
+  folder: sssp-pbe-precision-1.2
+  url: https://archive.materialscloud.org/record/file?filename=SSSP_1.2_PBE_precision.tar.gz&record_id=1508
+  description: >-
+    Standard Solid State Pseudopotentials (precision)
+    for the PBE functional
+- name: sg15-oncv-1.1
+  file: sg15_oncv_upf_2015-10-07.tar.gz
+  folder: sg15-oncv-1.1
+  url: http://www.quantum-simulation.org/potentials/sg15_oncv/sg15_oncv_upf_2015-10-07.tar.gz
+  description: >-
+    SG15 Optimized Norm-Conserving Vanderbilt (ONCV) pseudopotentials

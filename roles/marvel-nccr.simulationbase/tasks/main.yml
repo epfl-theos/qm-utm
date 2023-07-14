@@ -1,0 +1,48 @@
+- import_tasks: package_managers.yml
+  tags: simulationbase_package_managers
+
+# - import_tasks: singularity.yml
+#   tags: simulationbase_singularity
+#   when: cloud_platform != 'docker'
+
+- block:
+  # This fails on docker with
+  # "given timezone is not available"
+  - name: set timezone to {{ simulationbase_tmz }}
+    become: true
+    timezone:
+      name: "{{ simulationbase_tmz }}"
+    tags: simulationbase_timezone
+
+  # Note: docker does not allow to edit /etc/hosts
+  - import_tasks: hostname.yml
+    tags: simulationbase_hostname
+
+  # This causes the following error on docker 18.05.0~ce~3-0~ubuntu when
+  # *removing* the docker container:
+  # Error response from daemon: container ... : driver "overlay2" failed to remove root filesystem:
+  # remove /var/lib/docker/overlay2/.../diff/swapfile: operation not permitted
+  # See https://github.com/moby/moby/issues/4250#issuecomment-35566530
+  - import_tasks: swap.yml
+    tags: simulationbase_swap
+  when: cloud_platform != 'docker'
+
+- import_tasks: stacksize.yml
+  tags: simulationbase_stacksize
+
+- import_tasks: build_env.yml
+  tags: simulationbase_build_env
+
+- import_tasks: plotting.yml
+  tags: simulationbase_plotting
+
+- import_tasks: atomic.yml
+  tags: simulationbase_atomic
+
+- import_tasks: folders.yml
+  tags: simulationbase_folders
+
+- name: Clean up to reduce disk usage
+  include_tasks: cleanup.yml
+  tags: simulationbase_cleanup
+  when: clean is defined and clean

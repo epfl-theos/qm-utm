@@ -1,0 +1,12 @@
+# QE 6.2.1: test-suite fails to create temporary directory
+# Should be fixed in next release. See https://gitlab.com/QEF/q-e/issues/15
+# - name: make temporary directory
+#   file:
+#     path: /tmp/save
+#     state: directory
+
+- name: run QE test suite
+  command: "make test-suite"
+  args:
+    creates: "{{ quantum_espresso_topdir }}/test-suite/Makefile"
+    chdir: "{{ quantum_espresso_topdir }}"

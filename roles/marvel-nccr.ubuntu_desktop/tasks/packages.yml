@@ -1,0 +1,33 @@
+---
+- name: Install ubuntu-desktop (apt)
+  become: true
+  apt:
+    name:
+      - ubuntu-desktop
+      # - lxde
+      # - lxde-common
+      - python3-pip
+
+- name: Install packages (pip)
+  become: true
+  pip:
+    name: "psutil"
+
+- name: Start gdm3 service to get a graphical login
+  become: true
+  service:
+    name: gdm3
+    state: started
+
+- name: install chromium-browser
+  become: true
+  apt:
+    name: "chromium-browser"
+  when: ubuntu_desktop_browser == 'chromium-browser'
+
+- name:
+  include_role:
+    name: gantsign.default-web-browser
+  vars:
+    default_web_browser: chromium-browser
+  when: ubuntu_desktop_browser == 'chromium-browser'

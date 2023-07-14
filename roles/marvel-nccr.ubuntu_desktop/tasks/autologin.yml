@@ -1,0 +1,34 @@
+---
+- name: enable autologin
+  become: true
+  ini_file:
+    path: /etc/gdm3/custom.conf
+    section: "daemon"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - option: AutomaticLoginEnable
+      value: "true"
+    - option: AutomaticLogin
+      value: "{{ ubuntu_desktop_vm_user }}"
+    # This does not seem to have an effect unfortunately
+    # (welcome screen still shown on first login)
+    - option: InitialSetupEnable
+      value: "false"
+
+# see: https://askubuntu.com/a/1030095/715125
+# Note: gnome-initial-setup is only *recommended* by ubuntu_desktop
+- name: remove gnome-initial-setup
+  become: true
+  apt:
+    name:
+      - gnome-initial-setup
+    state: absent
+
+# - name: disable autologin timeout
+#   become: true
+#   ini_file:
+#     path: /etc/lightdm/lightdm.conf.d/12-autologin.conf
+#     section: "Seat:*"
+#     option: "autologin-user-timeout"
+#     value: "0"

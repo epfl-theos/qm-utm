@@ -1,0 +1,22 @@
+---
+- name: Install some common editors
+  become: true
+  apt:
+    name:
+      - emacs
+      - vim
+      - nano
+      - evince
+
+- name: install basic .vimrc
+  become: true
+  become_user: "{{ editors_vm_user }}"
+  copy:
+    src: .vimrc
+    dest: "${HOME}"
+
+- name: Install imagemagick
+  become: true
+  apt:
+    name:
+      - graphicsmagick

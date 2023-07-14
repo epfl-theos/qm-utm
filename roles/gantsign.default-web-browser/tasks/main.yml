@@ -1,0 +1,4 @@
+---
+- import_tasks: xsession.yml
+
+- import_tasks: gnome.yml

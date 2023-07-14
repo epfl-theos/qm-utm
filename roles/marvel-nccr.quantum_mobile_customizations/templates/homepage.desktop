@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Homepage
+Comment=Quantum Mobile Homepage
+Exec={{ qm_customizations_browser }} {{ qm_customizations_homepage }}
+Icon=quantum-mobile-logo.png
+Type=Application

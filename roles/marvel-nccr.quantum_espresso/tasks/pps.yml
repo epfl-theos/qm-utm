@@ -1,0 +1,24 @@
+# download and extract pseudopotentials
+- name: download "{{ pp.file }}"
+  get_url:
+    url: "{{ pp.url }}"
+    dest: "{{ quantum_espresso_code_folder }}/{{ pp.file }}"
+    mode: "u+r"
+  register: qe_pp_download
+  until: not qe_pp_download.failed
+  retries: 3
+  delay: 10
+
+- name: "Create {{ pp.folder }}/"
+  become: true
+  file:
+    path: "{{ quantum_espresso_data_folder }}/{{ pp.folder }}"
+    state: directory
+
+- name: "Unpack {{ pp.file }}"
+  become: true
+  unarchive:
+    src: "{{ qe_pp_download.dest }}"
+    dest: "{{ quantum_espresso_data_folder }}/{{ pp.folder }}"
+    remote_src: true
+  register: pp_extract

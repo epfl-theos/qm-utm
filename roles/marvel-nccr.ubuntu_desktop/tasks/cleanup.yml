@@ -1,0 +1,21 @@
+---
+- name: apt-get clean
+  become: true
+  command: apt-get clean
+
+- name: wipe apt lists
+  become: true
+  shell: "rm -rf /var/lib/apt/lists/*"
+
+- name: wipe vm user cache
+  become: true
+  become_user: "{{ ubuntu_desktop_vm_user }}"
+  file:
+    state: absent
+    path: "~/.cache"
+
+- name: wipe root user cache
+  become: true
+  file:
+    state: absent
+    path: "~/.cache"

@@ -1,0 +1,20 @@
+---
+- import_tasks: packages.yml
+  tags: ubuntu_desktop_packages
+- import_tasks: disable_guestuser.yml
+  tags: ubuntu_desktop_disable_guestuser
+- import_tasks: disable_autolock.yml
+  tags: ubuntu_desktop_disable_autolock
+- import_tasks: launcher.yml
+  tags: ubuntu_desktop_launcher
+- import_tasks: autologin.yml
+  tags: ubuntu_desktop_autologin
+- import_tasks: chromium_keyring.yml
+  tags: ubuntu_desktop_chromium_keyring
+
+- name: Clean up to reduce disk usage
+  include_tasks: cleanup.yml
+  tags: ubuntu_desktop_cleanup
+  when: clean is defined and clean
+
+- meta: flush_handlers

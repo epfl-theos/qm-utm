@@ -1,0 +1,26 @@
+---
+allow_duplicates: false
+
+galaxy_info:
+  role_name: ubuntu_desktop
+  author: "MARVEL NCCR"
+  # yamllint disable-line rule:line-length
+  description: "An ansible role that installs & configures Ubuntu desktop on plain Ubuntu."
+  license: MIT
+  min_ansible_version: 2.7
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+  galaxy_tags:
+    - ubuntu
+    - application
+    - science
+
+# Need to install chrome *before* running role
+# dependencies:
+#  - role: gantsign.default-web-browser
+#    version: 3.1.0
+#    vars:
+#      default_web_browser: chromium-browser
+#    when: ubuntu_desktop_browser == 'chromium'

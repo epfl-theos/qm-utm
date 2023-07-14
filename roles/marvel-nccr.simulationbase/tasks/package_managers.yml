@@ -1,0 +1,32 @@
+- name: Update repositories cache & upgrade packages
+  become: true
+  apt:
+    cache_valid_time: 86400  # One day
+  notify: apt upgrade
+
+- name: Install apt, pip
+  become: true
+  apt:
+    name:
+    - aptitude
+    - python-pip
+    - python-dev
+  notify: apt clean
+  when: ansible_python_version is version('3', '<')
+
+- name: Install apt, pip3
+  become: true
+  apt:
+    name:
+    - aptitude
+    - python3-pip
+    - python3-dev
+  notify: apt clean
+  when: ansible_python_version is version('3', '>=')
+
+- name: upgrade pip
+  become: true
+  pip:
+    name: pip
+    extra_args: --upgrade
+  notify: clean cache

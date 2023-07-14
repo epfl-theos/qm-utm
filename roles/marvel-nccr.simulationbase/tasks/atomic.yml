@@ -1,0 +1,14 @@
+- name: Install atomistic tools
+  become: true
+  pip:
+    name:
+    - cif2cell
+    state: present
+
+- include_role:
+    name: release_notes
+  vars:
+    section: "Atomic Tools"
+    option: "available tools"
+    value: "cif2cell"
+  when: release_notes is defined and release_notes

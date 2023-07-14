@@ -1,0 +1,25 @@
+---
+all:
+  vars:
+    vm_name: mse468
+    vm_hostname: "mse468"
+    vm_user: "max"
+    vm_password: "aiida"
+    vm_shared_folder: "/shared"
+    vm_codes_folder: "${HOME}/codes"
+    vm_data_folder: "/usr/local/share"
+    vm_headless: false
+    vm_browser: firefox  # 'chromium-browser' or 'firefox'
+    vm_description: "A Virtual Machine for MSE468 class"
+    vm_url: "https://github.com/unkcpz/mse468-vm"
+    vm_author: "MARVEL NCCR and MaX CoE"
+    vm_readme_file: "${HOME}/Desktop/README.md"
+    vm_examples_folder:       # "${HOME}/examples" we don't currently use this folder
+    vm_examples_folder_reamde:       # "${HOME}/examples/README.txt"
+    vm_version: "23.02.14"
+
+  hosts:
+    vm:
+      ansible_host: 127.0.0.1
+      ansible_user: max
+      ansible_port: 2200

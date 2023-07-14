@@ -1,0 +1,109 @@
+# prerequisites
+- name: Install libraries
+  become: true
+  apt:
+    name:
+    - build-essential
+    - wget    # needed for wget from https
+    - gfortran
+    - openmpi-bin
+    - libopenmpi-dev
+    - libfftw3-dev
+    - libfftw3-mpi-dev
+    - liblapack-dev
+    - libblas-dev
+    state: present
+    update_cache: true
+
+# Will only download once
+- name: Get Quantum ESPRESSO source
+  get_url:
+    url: "{{ quantum_espresso_url }}"
+    dest: "{{ quantum_espresso_code_folder }}/{{ quantum_espresso_src_archive }}"
+  register: quantum_espresso_download
+
+# For some reason this is not idempotent on travis
+# See also https://github.com/ansible/ansible/issues/22254
+# (but not sure it is related)
+- name: Extract QE source
+  tags:
+  - skip_ansible_lint
+  unarchive:
+    src: "{{ quantum_espresso_download.dest }}"
+    dest: "{{ quantum_espresso_code_folder }}"
+    remote_src: true
+  when: quantum_espresso_download.changed
+
+# --fpe-summary=none removes all floating-point exceptions
+# see https://github.com/marvel-nccr/quantum-mobile/issues/52
+- name: Configure QE
+  environment:
+    FFLAGS: '-O3 -g -ffpe-summary=none'
+  command: "./configure --enable-parallel --prefix {{ quantum_espresso_prefix }}"
+  args:
+    creates: "{{ quantum_espresso_topdir }}/make.inc"
+    chdir: "{{ quantum_espresso_topdir }}"
+
+- name: Make QE executables
+  command: "make {{ item.name }}"
+  args:
+    creates: "{{ item.folder }}/{{ item.executable }}"
+    chdir: "{{ quantum_espresso_topdir }}"
+  with_items: "{{ quantum_espresso_executables }}"
+  when: item.make is defined and item.make
+  register: quantum_espresso_make
+
+- import_tasks: tests.yml
+  when: quantum_espresso_make.changed and run_tests is defined and run_tests
+
+- name: Install QE executables
+  command: "make install"
+  become: true
+  args:
+    creates: "{{ item.folder }}/{{ item.executable }}"
+    chdir: "{{ quantum_espresso_topdir }}"
+  with_items: "{{ quantum_espresso_executables }}"
+  register: quantum_espresso_make
+
+- name: "Fix OpenMPI issue https://github.com/open-mpi/ompi/issues/1393"
+  become: true
+  lineinfile:
+    path: "{{ quantum_espresso_env_file }}"
+    line: "export OMPI_MCA_btl=^openib"
+    create: true
+
+- include_role:
+    name: release_notes
+  vars:
+    section: "Quantum ESPRESSO"
+    option: "version"
+    value: "{{ quantum_espresso_version }}"
+  when: release_notes is defined and release_notes
+
+- include_role:
+    name: release_notes
+  vars:
+    section: "Quantum ESPRESSO"
+    option: "usage"
+    value: >-
+      Quantum ESPRESSO is installed in {{ quantum_espresso_prefix }}.
+      'pw.x', 'cp.x', ... have been added to the PATH
+  when: release_notes is defined and release_notes
+
+- name: "Create QE data folder"
+  become: true
+  file:
+    path: "{{ quantum_espresso_data_folder }}"
+    state: directory
+
+- name: Add pseudopotentials
+  include_tasks: pps.yml
+  loop: "{{ quantum_espresso_pps }}"
+  loop_control:
+    loop_var: pp
+
+- name: Remove code folder
+  file:
+    state: absent
+    path: "{{ quantum_espresso_topdir }}"
+  when: clean is defined and clean

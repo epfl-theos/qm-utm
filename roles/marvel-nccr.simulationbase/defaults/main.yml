@@ -1,0 +1,7 @@
+simulationbase_hostname: localhost
+simulationbase_codes_folder: "/tmp"
+simulationbase_scratch_folder: "/scratch"
+simulationbase_vm_user: "{{ ansible_env.SUDO_USER | default(ansible_env.USER, true) | default(ansible_user_id, true) }}"
+simulationbase_tmz: Europe/Zurich
+
+cloud_platform: ""  # e.g. 'aws', 'docker'

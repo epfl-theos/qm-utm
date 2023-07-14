@@ -1,0 +1,61 @@
+- name: Create folder for generic MARVEL data
+  become: true
+  file:
+    path: "{{ qm_customizations_custom_folder }}"
+    state: directory
+
+- name: Copy the background image
+  become: true
+  copy:
+    src: quantum-mobile-bg.png
+    dest: "{{ qm_customizations_custom_folder }}/quantum-mobile-bg.png"
+    mode: 0755
+
+- name: Create folder for examples
+  when: qm_customizations_examples_folder is truthy
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  file:
+    path: "{{ qm_customizations_examples_folder }}"
+    state: directory
+
+- name: clean compiled python files
+  when: qm_customizations_examples_folder is truthy and clean is defined and clean
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  shell: find . -name "*.pyc" | xargs rm -f
+  ignore_errors: true
+  args:
+    chdir: "{{ qm_customizations_examples_folder }}"
+
+- name: Add readme for examples
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  when: qm_customizations_examples_readme is truthy
+  ini_file:
+    path: "{{ qm_customizations_examples_readme }}"
+    section: "General"
+    option: "info"
+    value: >-
+      This folder contains examples of how to use the various codes that are
+      available in the VM.
+      You find this folder both in the user home directory and (symlinked) on
+      the Desktop.
+    create: true
+
+- name: create desktop if not exists
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  file:
+    path: "${HOME}/Desktop"
+    state: directory
+  when: not qm_customizations_headless
+
+- name: symlink examples to desktop
+  when: qm_customizations_examples_folder is truthy and not qm_customizations_headless
+  become: true
+  become_user: "{{ qm_customizations_vm_user }}"
+  file:
+    src: "{{ qm_customizations_examples_folder }}"
+    dest: "${HOME}/Desktop/examples"
+    state: link

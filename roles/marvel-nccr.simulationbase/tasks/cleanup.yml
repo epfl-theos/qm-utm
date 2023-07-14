@@ -1,0 +1,29 @@
+- name: apt-get clean
+  become: true
+  command: apt-get clean
+  args:
+    warn: false  # module "apt" does not support the "clean" subcommand
+  tags: skip_ansible_lint
+    # 301: not worth it
+    # 303: module "apt" does not support the "clean" subcommand
+
+- name: wipe apt lists
+  become: true
+  shell: "rm -rf /var/lib/apt/lists/*"
+  args:
+    warn: false  # module "file" does not support wildcards
+  tags: skip_ansible_lint
+    # 301: not worth it
+
+- name: wipe vm user cache
+  become: true
+  become_user: "{{ simulationbase_vm_user }}"
+  file:
+    state: absent
+    path: "~/.cache"
+
+- name: wipe root user cache
+  become: true
+  file:
+    state: absent
+    path: "~/.cache"

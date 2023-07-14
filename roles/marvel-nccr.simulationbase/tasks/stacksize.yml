@@ -1,0 +1,7 @@
+# this is needed by many codes...
+- name: set stack size to unlimited
+  become: true
+  become_user: "{{ simulationbase_vm_user }}"
+  lineinfile:
+    path: "${HOME}/.profile"
+    line: ulimit -s unlimited

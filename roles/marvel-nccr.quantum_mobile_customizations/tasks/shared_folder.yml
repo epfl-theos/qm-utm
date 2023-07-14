@@ -1,0 +1,8 @@
+# This enables sudoless access to shared folder in VirtualBox
+- name: Add user to 'vboxsf' group
+  become: true
+  user:
+    name: "{{ qm_customizations_vm_user }}"
+    groups: vboxsf
+    append: true
+  when: cloud_platform == 'virtualbox'

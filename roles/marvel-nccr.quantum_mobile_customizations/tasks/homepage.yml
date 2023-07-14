@@ -1,0 +1,13 @@
+- name: copy quamtum-mobile logo
+  become: true
+  copy:
+    src: quantum-mobile-logo.png
+    dest: /usr/share/icons/
+
+# - name: create desktop shortcut to QM homepage
+#   become: true
+#   become_user: "{{ qm_customizations_vm_user }}"
+#   template:
+#     src: homepage.desktop
+#     dest: "${HOME}/Desktop"
+#     mode: "0753"
