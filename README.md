@@ -9,7 +9,7 @@ The deployment in VirtualBox is the same.
 
 ![image](https://github.com/unkcpz/mse468-vm/assets/8831685/5f98badb-ead5-4757-a2c0-a6ca6229f3b0)
 
-You can config ssh with:
+In order to ssh to the virtual machine to run commands through ansible. You can config ssh (in your local machine) with:
 ```
 Host mse468
   HostName 127.0.0.1
