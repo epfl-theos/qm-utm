@@ -1,6 +1,3 @@
-> **Warning**
-> The repo contains the GULP code that cannot be redistributed, keep the repository private.
-
 The deployment in VirtualBox is the same.
 
 ### Install and start the VM
